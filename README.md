@@ -1,32 +1,48 @@
 
 # Managing an ML project with DVC
 
-A simple demo that shows how to use DVC to track data and model binaries. We will also see how to manage experiments with DVC. 
+A simple demo repository that shows how to use DVC to track data and model binaries. We will also see how to manage experiments with DVC. 
 
-This repo has three branches:
+This repo has three import tags:
 
-- `main`: no dvc (blank)
+- `blank`: dvc has been not configured
 - `dvc-tracked` : dvc configured to track data 
 - `dvc-experiment`: dvc configured to track data and manage experiments
+
+If you want to follow this tutorial step by step I suggest branching from the blank tag
+
+    git checkout blank
+    git branch my-dvc-journey
 
 Main reference: https://dvc.org/ (excellent documentation!)
 
 ## Setting up for DVC
 
-DVC can be installed with pip. In this case I will be using an *SSH remote* to store binaries, hence why you see `dvc['ssh']` in `requirements.txt`
-
-**Note:** See here for other remote options: https://dvc.org/doc/install/linux#install-with-pip, e.g. S3, Azure, google drive, etc
-
-To run the codes in this repo we need a Python environment with turbofats and scikit-learn:
+To run the codes in this repo we need a Python environment with turbofats, scikit-learn and DVC. You can set the environment quickly with:
 
     conda create -n demo python=3.9 pip cython numba numpy pandas scikit-learn matplotlib statsmodels
     conda activate demo
     pip install -r requirements.txt
 
+This will install DVC with pip. 
+
+If you already have an working environment and you only need DVC, then:
+
+    pip install dvc[ssh]
+
+In this tutorial I will be using an *SSH remote* to store binaries, hence why you see `dvc[ssh]` in `requirements.txt`
+
+**Note for other remote options:** See here: https://dvc.org/doc/install/linux#install-with-pip, e.g. S3, Azure, google drive, etc. If you are not sure which remote to use you can do `pip install dvc[all]`
+
+
 
 ## Start [tracking data with DVC](https://dvc.org/doc/start/data-management/data-versioning)
 
-DVC requires a git tracked folder. To initialize DVC in a git tracked repo run:
+**Important:** DVC requires a git tracked folder. 
+
+This repo is already git tracked. If you want to start using DVC on a project that is not tracked you would need to do `git init`
+
+To initialize DVC in a git tracked repo run:
 
     dvc init
     
@@ -36,6 +52,7 @@ To track data we use the [`dvc add`](https://dvc.org/doc/command-reference/add) 
 
 Example:
 
+    unzip explorer_ztf_lcs.zip
     dvc add raw_data
     git add .gitignore raw_data.dvc
     git commit -m "raw_data tracked with dvc"

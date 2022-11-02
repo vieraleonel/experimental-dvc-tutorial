@@ -9,12 +9,12 @@ This repo has three import tags:
 - `dvc-tracked` : dvc configured to track data 
 - `dvc-experiment`: dvc configured to track data and manage experiments
 
-If you want to follow this tutorial step by step I suggest branching from the blank tag
+If you want to follow this tutorial step by step I suggest branching from the blank tag:
 
     git checkout blank
-    git branch my-dvc-journey
+    git switch -c my-own-dvc-journey
 
-Main reference: https://dvc.org/ (excellent documentation!)
+The DVC documentation at https://dvc.org/ is the only reference for this tutorial. The documentation is excellent, please check it. 
 
 ## Setting up for DVC
 
@@ -33,7 +33,6 @@ If you already have an working environment and you only need DVC, then:
 In this tutorial I will be using an *SSH remote* to store binaries, hence why you see `dvc[ssh]` in `requirements.txt`
 
 **Note for other remote options:** See here: https://dvc.org/doc/install/linux#install-with-pip, e.g. S3, Azure, google drive, etc. If you are not sure which remote to use you can do `pip install dvc[all]`
-
 
 
 ## Start [tracking data with DVC](https://dvc.org/doc/start/data-management/data-versioning)

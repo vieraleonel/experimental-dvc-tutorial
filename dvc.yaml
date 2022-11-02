@@ -1,0 +1,36 @@
+stages:
+  parse_raw_data:
+    cmd: python src/parse_raw_data.py
+    deps:
+    - raw_data/
+    - src/parse_raw_data.py
+    outs:
+    - data/
+  compute_features:
+    cmd: python src/compute_features.py
+    deps:
+    - data/
+    - src/compute_features.py
+    params:
+    - features.list
+    outs:
+    - features/
+  train_model:
+    cmd: python src/train_classifier.py
+    params:
+    - train.criterion
+    - train.max_depth
+    deps:
+    - features/
+    - src/train_classifier.py
+    outs:
+    - models/
+  evaluate_model:
+    cmd: python src/evaluate_classifier.py
+    deps:
+    - features/
+    - models/
+    - src/evaluate_classifier.py
+    metrics:
+    - metrics.json:
+        cache: false

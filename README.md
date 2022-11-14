@@ -1,26 +1,26 @@
 
-# Managing an ML project with DVC
+# DVC: Una herramienta para administrar y versionar experimentos con datos y modelos
 
-A simple demo repository that shows how to use DVC to track data and model binaries. We will also see how to manage experiments with DVC. 
+Este repositorio demuestra como utilizar DVC para versionar y hacer seguimiento (*tracking*) de archivos binarios, por ejemplo datos y modelos. También veremos como construir pipelines para ejecutar experimentos con un sólo comando. Finalmente veremos como combinar la anterior para realizar y administrar experimentos de ML.
 
-This repo has three import tags:
+Este repositorio tiene tres tags importantes:
 
-- `blank`: dvc has been not configured
-- `dvc-tracked` : dvc configured to track data 
-- `dvc-experiment`: dvc configured to track data and manage experiments
+- `blank`: DVC no ha sido configurado
+- `dvc-tracked` : DVC configurado para hacer seguimiento de datos 
+- `dvc-experiment`: DVC configurado para hacer seguimiento de datos y administrar experimentos
 
-If you want to follow this tutorial step by step I suggest branching from the blank tag:
+Si desea seguir este tutorial paso a paso sugiero crear una rama (*branch*) desde la etiqueta (*tag*) blank con:
 
     git checkout blank
     git switch -c my-own-dvc-journey
 
-The DVC documentation at https://dvc.org/ is the only reference for this tutorial. The documentation is excellent, please check it. 
+La única refgerencia para este tutorial es la documentación de DVC: https://dvc.org/. La documentación es excelente, por favor revísenla. 
 
 ## Setting up for DVC
 
 To run the codes in this repo we need a Python environment with turbofats, scikit-learn and DVC. You can set the environment quickly with:
 
-    conda create -n demo python=3.9 pip cython numba numpy pandas scikit-learn matplotlib statsmodels
+    conda create -n demo python=3.9 pip scikit-learn
     conda activate demo
     pip install -r requirements.txt
 

@@ -20,7 +20,7 @@ La única referencia para este tutorial es la documentación de DVC: https://dvc
 
 Para hacer este tutorial se necesita un ambiente de Python con DVC y las librerías usuales de *machine learning*. Si no tiene un ambiente de Python, puede prepararlo rápidamente con:
 
-    conda create -n demo python=3.9 pip scikit-learn
+    conda create -n demo python=3.9 pip scikit-learn pandas
     conda activate demo
     pip install -r requirements.txt
 

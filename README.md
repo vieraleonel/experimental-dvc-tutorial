@@ -14,7 +14,7 @@ Si desea seguir este tutorial paso a paso sugiero crear una rama (*branch*) desd
     git checkout blank
     git switch -c my-own-dvc-journey
 
-La única refgerencia para este tutorial es la documentación de DVC: https://dvc.org/. La documentación es excelente, por favor revísenla. 
+La única referencia para este tutorial es la documentación de DVC: https://dvc.org/. La documentación es excelente, por favor revísenla. 
 
 ## Ambiente de desarrollo para DVC
 

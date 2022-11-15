@@ -1,6 +1,0 @@
-features:
-  list: ['Mean', 'Std']
-
-train:
-  criterion: 'gini'
-  max_depth: 10

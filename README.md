@@ -9,30 +9,28 @@ Este repositorio tiene tres tags importantes:
 - `dvc-tracked` : DVC configurado para hacer seguimiento de datos 
 - `dvc-experiment`: DVC configurado para hacer seguimiento de datos y administrar experimentos
 
-Si desea seguir este tutorial paso a paso sugiero crear una rama (*branch*) desde la etiqueta (*tag*) blank con:
+Si desea seguir este tutorial paso a paso sugiero crear una rama (*branch*) desde la etiqueta (*tag*) `blank` con:
 
     git checkout blank
     git switch -c my-own-dvc-journey
 
 La única refgerencia para este tutorial es la documentación de DVC: https://dvc.org/. La documentación es excelente, por favor revísenla. 
 
-## Setting up for DVC
+## Ambiente de desarrollo para DVC
 
-To run the codes in this repo we need a Python environment with turbofats, scikit-learn and DVC. You can set the environment quickly with:
+Para hacer este tutorial se necesita un ambiente de Python con DVC y las librerías usuales de *machine learning*. Si no tiene un ambiente de Python, puede prepararlo rápidamente con:
 
     conda create -n demo python=3.9 pip scikit-learn
     conda activate demo
     pip install -r requirements.txt
 
-This will install DVC with pip. 
+Si ya tiene un ambiente y sólo necesita DVC, puede instalarlo con:
 
-If you already have an working environment and you only need DVC, then:
+    pip install dvc[gdrive]
 
-    pip install dvc[ssh]
+Por simpleza del tutorial se utilizará *google drive* como servidor de almacenamiento remoto.
 
-In this tutorial I will be using an *SSH remote* to store binaries, hence why you see `dvc[ssh]` in `requirements.txt`
-
-**Note for other remote options:** See here: https://dvc.org/doc/install/linux#install-with-pip, e.g. S3, Azure, google drive, etc. If you are not sure which remote to use you can do `pip install dvc[all]`
+**Nota**: Para otras opciones de servidores remotos vea aquí: https://dvc.org/doc/install/linux#install-with-pip, por ejemplo Amazon S3, Microsoft Azure o un equipo personal que se accede por SSH. Si no está seguro sobre cual remoto utilizar puede instalarlos todos con: `pip install dvc[all]`
 
 
 ## Start [tracking data with DVC](https://dvc.org/doc/start/data-management/data-versioning)
@@ -59,31 +57,29 @@ Example:
 
 DVC tracks artifacts by their MD5 hashes which are stored in a `.dvc` file. These files should be git tracked.
 
-## [Pulling and pushing data from/to cache and remote](https://dvc.org/doc/start/data-management/data-pipelines)
+## [Trayendo/enviado datos desde/hacia el cache al remoto](https://dvc.org/doc/start/data-management/data-pipelines)
 
-Try removing a file from the `raw_data` and then calling [`dvc pull`](https://dvc.org/doc/command-reference/pull). Missing data is pulled from cache. If cache does not exists, e.g. a cleanly cloned repo, `dvc pull` will pull from the remote.
+Intente remove un archivo cualquier dentro del directorio `raw_data` y luego ejecute [`dvc pull`](https://dvc.org/doc/command-reference/pull). Los datos que se han perdido se traen (*pull*) desde el *cache*. Si el *cache* no existe, por ejemplo cuando se clona por primera vez el repositorio, entonces `dvc pull` traerá los datos desde el servidor remoto.
 
-(You can pull a single .dvc file or pull all dvc files in the repo).
+**Nota:** Se puede traer los archivos asociados a un artefacto `.dvc` individual con `dvc pull nombre.dvc`. En cambio `dvc pull` a secas traerá todos los artefactos del repositorio.
 
-Github is our remote for git tracked code. To backup and share large binaries we have to set a remote with DVC. Remotes are added/configured/deleted with [`dvc remote`](https://dvc.org/doc/command-reference/remote#remote)
+Github es el servidor remoto para código fuente versionado con `git`. Para respaldar y compartir archivos binarios debemos configurar un servidor remoto para DVC. Los remotos se añaden/configuran/borran con la instrucción [`dvc remote`](https://dvc.org/doc/command-reference/remote#remote)
 
-For a shared server which is accessed via SSH:
+Para configurar *google drive* como servidor remoto:
 
-    dvc remote add -d ssh-server ssh://my-server-url/an-absolute-path
-    dvc remote modify ssh-server port my-server-port
+    dvc remote add -d mygdrive gdrive://mygdrivefolderID
 
-This created an default remote entry in `.dvc/config`. If this is a shared server we may only need to set our user/key, this can be done using the --local flag
+donde la ID es la secuencia de caracteres que aparece en la URL de la carpeta que queremos utilizar.
 
-    dvc remote modify --local ssh-server user my-ssh-user-name
-    dvc remote modify --local ssh-server keyfile path-to-my-key-file
-
-With all set you then send data to the remote using
+Esto crea un remoto por defecto (*default*) en el archivo de configuración `.dvc/config`. Luego, para enviar datos al remoto utilizamos:
 
     dvc push
-    
-This will create a several dvc folders at `an-absolute-path` in the ssh server. 
 
-**Note:** if you run into problems when pushing/pulling data use the -v flag
+La primera vez que ejecutemos este comando en la sesión se abrirá una pestaña en el navegador donde se solicitarán los permisos necesarios para su cuenta de google. 
+    
+**Nota:** Si tiene problemas con los comandos `push` o `pull` se recomienda agregar el flag `-v` 
+
+**Nota:** Lo anterior es suficiente para uso personal y para una cantidad moderada de archivos. Si se desea usar servicios de Google sin tener que aceptar permisos manualmente se recomienda usar *Google Cloud Project*. Otros servicios en la nube como Azure ponen menos problemas.
 
 ## Checking out between "data commits"
 

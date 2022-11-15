@@ -3,20 +3,20 @@
 
 Este repositorio demuestra como utilizar DVC para versionar y hacer seguimiento (*tracking*) de archivos binarios, por ejemplo datos y modelos. También veremos como construir pipelines para ejecutar experimentos con un sólo comando. Finalmente veremos como combinar la anterior para realizar y administrar experimentos de ML.
 
-Este repositorio tiene tres tags importantes:
+Este repositorio tiene tres *tags* importantes:
 
 - `blank`: DVC no ha sido configurado
 - `dvc-tracked` : DVC configurado para hacer seguimiento de datos 
 - `dvc-experiment`: DVC configurado para hacer seguimiento de datos y administrar experimentos
 
-Si desea seguir este tutorial paso a paso sugiero crear una rama (*branch*) desde la etiqueta (*tag*) `blank` con:
+Si desea seguir este tutorial paso a paso se sugiere crear una rama (*branch*) desde la etiqueta (*tag*) `blank` con:
 
     git checkout blank
     git switch -c my-own-dvc-journey
 
 La única referencia para este tutorial es la documentación de DVC: https://dvc.org/. La documentación es excelente, por favor revísenla. 
 
-## Ambiente de desarrollo para DVC
+## Ambiente de desarrollo para este tutorial
 
 Para hacer este tutorial se necesita un ambiente de Python con DVC y las librerías usuales de *machine learning*. Si no tiene un ambiente de Python, puede prepararlo rápidamente con:
 
@@ -33,21 +33,19 @@ Por simpleza del tutorial se utilizará *google drive* como servidor de almacena
 **Nota**: Para otras opciones de servidores remotos vea aquí: https://dvc.org/doc/install/linux#install-with-pip, por ejemplo Amazon S3, Microsoft Azure o un equipo personal que se accede por SSH. Si no está seguro sobre cual remoto utilizar puede instalarlos todos con: `pip install dvc[all]`
 
 
-## Start [tracking data with DVC](https://dvc.org/doc/start/data-management/data-versioning)
+## [Empezar a versionar datos con DVC](https://dvc.org/doc/start/data-management/data-versioning)
 
-**Important:** DVC requires a git tracked folder. 
+**Importante:** DVC requiere una carpeta versionada con `git` (el presente repositorio ya está versionado con `git`). Si quisiera usar DVC en un proyecto que no esté versionado, primero debe ejecutar `git init`.
 
-This repo is already git tracked. If you want to start using DVC on a project that is not tracked you would need to do `git init`
-
-To initialize DVC in a git tracked repo run:
+Para inicializar DVC en un repositorio versionado con `git` se utiliza el comando:
 
     dvc init
-    
-This will create a hidden .dvc folder for the DVC configuration file and the `cache` folder in which the different versions of our binaries will live.
 
-To track data we use the [`dvc add`](https://dvc.org/doc/command-reference/add) command. You can either track a single binary or a directory. In the latter case DVC treats the folder as a single data artifact.
+Esto creará un directorio oculto `.dvc ` que contiene los archivos de configuración y el directorio `cache` donde se guardarán los binarios que versionaremos.
 
-Example:
+Para versionar datos se utiliza el comando [`dvc add`](https://dvc.org/doc/command-reference/add). Se puede versionar un archivo individual o un directorio. En el segundo caso, DVC trata el directorio completo como un artefacto individual.
+
+Utilicemos `dvc add` para versionar el directorio `raw_data`
 
     unzip explorer_ztf_lcs.zip
     dvc add raw_data
@@ -55,15 +53,15 @@ Example:
     git commit -m "raw_data tracked with dvc"
     git push
 
-DVC tracks artifacts by their MD5 hashes which are stored in a `.dvc` file. These files should be git tracked.
+DVC versiona los artefactos en base a su *hash* MD5, los cuales se guardan en un archivo con extensión `.dvc`. Estos archivos deben ser versionados con `git`.
 
-## [Trayendo/enviado datos desde/hacia el cache al remoto](https://dvc.org/doc/start/data-management/data-pipelines)
+## Trayendo/enviado datos desde/hacia el cache al remoto
 
-Intente remove un archivo cualquier dentro del directorio `raw_data` y luego ejecute [`dvc pull`](https://dvc.org/doc/command-reference/pull). Los datos que se han perdido se traen (*pull*) desde el *cache*. Si el *cache* no existe, por ejemplo cuando se clona por primera vez el repositorio, entonces `dvc pull` traerá los datos desde el servidor remoto.
+Intente remover un archivo cualquiera dentro del directorio `raw_data` y luego ejecute [`dvc pull`](https://dvc.org/doc/command-reference/pull). Los datos que se han perdido se traen (*pull*) desde el *cache*. Si el *cache* no existe, por ejemplo cuando se clona por primera vez el repositorio, entonces `dvc pull` traerá los datos desde el servidor remoto.
 
 **Nota:** Se puede traer los archivos asociados a un artefacto `.dvc` individual con `dvc pull nombre.dvc`. En cambio `dvc pull` a secas traerá todos los artefactos del repositorio.
 
-Github es el servidor remoto para código fuente versionado con `git`. Para respaldar y compartir archivos binarios debemos configurar un servidor remoto para DVC. Los remotos se añaden/configuran/borran con la instrucción [`dvc remote`](https://dvc.org/doc/command-reference/remote#remote)
+Githu y GitLab son servidores remotos para código fuente versionado con `git`. Para respaldar y compartir archivos binarios debemos configurar un servidor remoto para DVC. Los remotos se añaden/configuran/borran con la instrucción [`dvc remote`](https://dvc.org/doc/command-reference/remote#remote)
 
 Para configurar *google drive* como servidor remoto:
 
@@ -79,28 +77,22 @@ La primera vez que ejecutemos este comando en la sesión se abrirá una pestaña
     
 **Nota:** Si tiene problemas con los comandos `push` o `pull` se recomienda agregar el flag `-v` 
 
-**Nota:** Lo anterior es suficiente para uso personal y para una cantidad moderada de archivos. Si se desea usar servicios de Google sin tener que aceptar permisos manualmente se recomienda usar *Google Cloud Project*. Otros servicios en la nube como Azure ponen menos problemas.
+**Nota:** Lo anterior es suficiente para uso personal y para una cantidad moderada de archivos. Si desea usar servicios de Google sin tener que aceptar permisos manualmente se recomienda usar *Google Cloud Project* (otros servicios en la nube como Azure ponen menos problemas).
 
-## Checking out between "data commits"
 
-Simply change git branches or move to a commit with a different dvc file and checkout with dvc, example:
+## [Creando un *pipeline* de procesamiento de datos](https://dvc.org/doc/start/data-management/data-pipelines)
 
-    git checkout <...>
-    dvc checkout
+Un pipeline de DVC es un archivo `dvc.yaml` que describe las etapas que se ejecutarán secuencialmente, por ejemplo: manipulación de datos, extración de características, entrenamiento de modelo y cálculo de métricas de evaluación. Expresar estos procesos como un pipeline facilita la reproducibilidad y permite la automaticación de trabajos (CI/CD).
 
-## Making a [data pipeline](https://dvc.org/doc/start/data-management/data-pipelines)
-
-DVC pipelines are `dvc.yaml` files which describe stages that are run sequentially, e.g. data wrangling, feature extraction, model training and metrics computation. Stating this process as a pipeline allows for easier reproducibility and task automation.
-
-You can run the pipeline with the command
+Se puede ejecutar el pipeline con el comando:
 
     dvc repro
 
-Running this will create a `dvc.lock` file that should be git-tracked, also the results of the pipeline can be dvc-pushed to be shared.
+Esto creará un archivo `dvc.lock` que debe ser versionado con `git`. Los resultados del pipeline se versionan automáticamente con DVC y se pueden subir al remoto con `dvc push`.
 
-The stages of the pipeline may define dependencies on certain python scripts and data artifacts. DVC detects these changes and execute the needed stages. Stages are defined using the `dvc stage add` command
+Las etapas (*stages*) del pipeline definen depedencias sobre ciertos *scripts* y artefactos. DVC detecta si hay cambios en estas dependencias para ejecutar sólo las etapas que se requieran. Las etapas se definen con el comando `dvc stage add`.
 
-The commands used to create the stages in this demo were:
+Los comandos utilizados para crear las etapas en esta demostración fueron:
 
     dvc stage add -n parse_raw_data -d src/parse_raw_data.py -d raw_data/ -o data python src/parse_raw_data.py 
 
@@ -111,57 +103,54 @@ The commands used to create the stages in this demo were:
     dvc stage add -n evaluate_model -d src/evaluate_classifier.py -d models/ -d features/ -M metrics.json python src/evaluate_classifier.py
 
 
-Each flag in `dvc stage add` means:
+Cada flag en `dvc stage add` significa:
 
-- `-n` : name of the stage
-- `-d` : dependencies of the stage (can be many)
-- `-o` : outputs of the stage (can be many and will be dvc-tracked automatically)
-- `-p` : parameters for the stage, they should appear in a `params.yaml` file
-- `-M` : metrics file (more in this later)
+- `-n` : nombre de la etapa
+- `-d` : dependencias de la etapa (pueden ser varias)
+- `-o` : salidas de la etapa (pueden ser varias y serán versionadas por DVC automáticamente)
+- `-p` : parámetros de la etapa, deben explicitarse en el archivo `params.yaml`
+- `-M` : archivo de métricas (se explica más adelante)
 
-The `params.yaml` might contain model hyperparameters, dataset proportions, random seeds, etc
+El archivo `params.yaml` puede contener hiperparámetros del modelo, proporciones del dataset, semillas aleatorias y cualquier otro valor que podríamos necesitar cambiar durante nuestra experimentación. 
 
-**Note:** There can be several pipelines in a dvc repo, but only one per folder.
+**Nota:** Puede haber más de un pipeline en un mismo repositorio, pero sólo puede haber unno por directorio. 
 
-## [Metrics](https://dvc.org/doc/start/data-management/metrics-parameters-plots)
+## [Métricas](https://dvc.org/doc/start/data-management/metrics-parameters-plots)
 
-The last stage (evaluate model) set up a git tracked file called `metrics.json` 
+La última etapa del pipeline anterior genera un archivo versionado por `git` llamado `metrics.json` 
 
-In this case `src/evaluate_model.py` computes the f1-score of the trained model and saves this value in that file
+En este caso `src/evaluate_model.py` calcula el *f1-score* del modelo entrenado y guarda el valor en dicho archivo.
 
-We can check the performance of the current evaluation using
+Podemos verificar el desempeño de nuestra evaluación actual con:
 
     dvc metrics show 
 
-In general we want to iteratively improve our results by tuning and comparing models. We will now see DVC capabilities to track experiments using pipelines and metrics.
+En general queremos mejorar iterativamente nuestros resultados calibrando y comparando nuestros modelos. A continuación veremos como usar DVC para administrar experimentos en base a pipelines y métricas.
 
-**Note:** Metrics can be numerical tables and also plots, see the examples in the dvc documentation
+**Nota:** Las métricas pueden ser tablas numéricas y también gráficas, se recomienda ver los ejemplos de la documentación para más detalles: https://dvc.org/doc/user-guide/experiment-management/visualizing-plots
 
-## Experiments 
+## [Experimentos](https://dvc.org/doc/user-guide/experiment-management)
 
-An ML experiment in DVC is build from pipeline, parameter file and data artifacts. 
+Un experimento en DVC se construye a partir de un pipeline, un archivo de parámetros, y artefactos de datos. 
 
-The commands for managing experiments start with `dvc exp`
-
-For example:
+Los comandos para administrar experimentos empiezan con `dvc exp`. Por ejemplo:
 
     `dvc exp show`
 
-Presents a table with the results  commited to `main` andthe current head (`workspace`). The table includes the metrics, parameters and artifact versions.
+presenta una tabla con los resultados de la rama `main` y el *head* actual (`workspace`). La tabla incluye métricas, parámetros y versiones de los artefactos.
 
-You can run an experiment with:
+Podemos lanzar un experimento con:
 
     dvc exp run --set-param train.criterion='entropy'
 
-In this case we modified the DT hyperparameter `criterion` at run time. If you do `dvc exp show` again you will say the experiment under `main`
+En este caso se modifica el hiperparámetro `criterion` del árbol de decisión al momento de ejecutar. Si volvemos a hacer `dvc exp show` veremos un experimento bajo la rama `main`.
 
-We can set a queue of experiments using the `--queue` flag on `dvc exp run` and then calling
+Podemos encolar experimentos agregando el flag `--queue` en `dvc exp run`, luego podemos ejecutar:
 
     dvc exp run --run-all --jobs P
 
-where `P` is the amount of parallel tasks
+donde `P` es el número de experimentos encolados que queremos ejecutar en paralelo.
 
-Experiments are not tracked (non-permament). We can update our workspace with a particular experiment using `dvc exp apply` or we can create permament branches for an experiment with `dvc exp branch`. We can clean experiments with `dvc exp gc`. 
+Los experimentos no se versionan por defecto ya que no están pensados para ser permanentes. Si queremos actualizar nuestro *workspace* con un experimento en particular se utiliza `dvc exp apply` con la ID del experimento. También podemos crear una rama permanente para un experimento con `dvc exp branch`. Finalmente podemos limpiar los experimentos con `dvc exp gc`. 
 
-**Note:** Experiments can be shared by pushing/pulling them to a remote
-
+**Nota:** Si necesitamos respaldar o compartir experimentos (resultados intermedios) existe `dvc exp pull/push`.

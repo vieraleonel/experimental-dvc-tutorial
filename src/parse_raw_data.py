@@ -12,6 +12,7 @@ def parse_lc(path):
         df = df.rename(columns={'mjd': 'time',
                                 'magpsf_corr': 'magnitude',
                                 'sigmapsf_corr': 'error'})
+        df.dropna(axis=0, inplace=True)
         #df.columns = ['time', 'magnitude', 'error']
     return df
 

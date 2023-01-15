@@ -31,6 +31,8 @@ stages:
     - features/
     - models/
     - src/evaluate_classifier.py
+    outs:
+    - classification_report.csv
     metrics:
     - metrics.json:
         cache: false

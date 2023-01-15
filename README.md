@@ -1,7 +1,7 @@
 
 # DVC: Una herramienta para administrar y versionar experimentos con datos y modelos
 
-Este repositorio demuestra como utilizar DVC para versionar y hacer seguimiento (*tracking*) de archivos binarios, por ejemplo datos y modelos. También veremos como construir pipelines para ejecutar experimentos con un sólo comando. Finalmente veremos como combinar la anterior para realizar y administrar experimentos de ML.
+Este repositorio demuestra como utilizar DVC para versionar y hacer seguimiento (*tracking*) de datos y modelos para experimentos de machine learning. También veremos como construir pipelines para ejecutar experimentos con un sólo comando. Finalmente veremos como combinar la anterior para realizar y administrar experimentos de ML.
 
 Este repositorio tiene tres *tags* importantes:
 
@@ -135,7 +135,7 @@ Un experimento en DVC se construye a partir de un pipeline, un archivo de parám
 
 Los comandos para administrar experimentos empiezan con `dvc exp`. Por ejemplo:
 
-    `dvc exp show`
+    dvc exp show
 
 presenta una tabla con los resultados de la rama `main` y el *head* actual (`workspace`). La tabla incluye métricas, parámetros y versiones de los artefactos.
 
@@ -151,6 +151,10 @@ Podemos encolar experimentos agregando el flag `--queue` en `dvc exp run`, luego
 
 donde `P` es el número de experimentos encolados que queremos ejecutar en paralelo.
 
-Los experimentos no se versionan por defecto ya que no están pensados para ser permanentes. Si queremos actualizar nuestro *workspace* con un experimento en particular se utiliza `dvc exp apply` con la ID del experimento. También podemos crear una rama permanente para un experimento con `dvc exp branch`. Finalmente podemos limpiar los experimentos con `dvc exp gc`. 
+Opcionalmente también podemos administrar los experimentos encolados con los comandos
+
+    dvc queue start/stop/kill/status/logs
+
+**Importante** Los experimentos no se versionan por defecto ya que no están pensados para ser permanentes. Si queremos actualizar nuestro *workspace* con un experimento en particular se utiliza `dvc exp apply` con la ID del experimento. También podemos crear una rama permanente para un experimento con `dvc exp branch`. Finalmente podemos limpiar los experimentos con `dvc exp gc`. 
 
 **Nota:** Si necesitamos respaldar o compartir experimentos (resultados intermedios) existe `dvc exp pull/push`.

@@ -4,24 +4,24 @@ stages:
     cmd: python src/parse_raw_data.py
     deps:
     - path: raw_data/
-      md5: e509bcbd262d2c69605c4f29275dde4b.dir
-      size: 294108
-      nfiles: 4
+      md5: 6b24e71441f39809209c58cf48461d3e.dir
+      size: 861139
+      nfiles: 20
     - path: src/parse_raw_data.py
-      md5: e92f15d178b7081b19f7c82c686d47e6
-      size: 908
+      md5: 5eb87518b0abbdedd794116d00e75ca9
+      size: 948
     outs:
     - path: data/
-      md5: fa5a7e1d9a9a70846b7d7a6f6e51ecfd.dir
-      size: 28853
-      nfiles: 4
+      md5: 0e1f8944188e0c38004a89e52d4a36bd.dir
+      size: 92497
+      nfiles: 20
   compute_features:
     cmd: python src/compute_features.py
     deps:
     - path: data/
-      md5: fa5a7e1d9a9a70846b7d7a6f6e51ecfd.dir
-      size: 28853
-      nfiles: 4
+      md5: 0e1f8944188e0c38004a89e52d4a36bd.dir
+      size: 92497
+      nfiles: 20
     - path: src/compute_features.py
       md5: ec7a92b2f0f26c15a41082b9e427a647
       size: 968
@@ -29,46 +29,48 @@ stages:
       params.yaml:
         features.list:
         - Mean
-        - Std
     outs:
     - path: features/
-      md5: e465842201c425b0cd0fb3d0d90f7309.dir
-      size: 272
+      md5: 889a3c1fc0e21a406ef6b5e374648c66.dir
+      size: 871
       nfiles: 1
   train_model:
     cmd: python src/train_classifier.py
     deps:
     - path: features/
-      md5: e465842201c425b0cd0fb3d0d90f7309.dir
-      size: 272
+      md5: 889a3c1fc0e21a406ef6b5e374648c66.dir
+      size: 871
       nfiles: 1
     - path: src/train_classifier.py
-      md5: f8a10eb4f494ef4096452d9e03d30d3e
-      size: 957
+      md5: 0da4c80d21ce8d4d33a4369d3049837b
+      size: 1463
     params:
       params.yaml:
-        train.criterion: gini
-        train.max_depth: 10
+        train.criterion: entropy
+        train.max_depth: 1
     outs:
     - path: models/
-      md5: f9bb66d0f0d48aaaa3f569a470122c0e.dir
-      size: 1370
+      md5: 9eaf4987f133696e7c0ea5e05e266ac5.dir
+      size: 1373
       nfiles: 1
   evaluate_model:
     cmd: python src/evaluate_classifier.py
     deps:
     - path: features/
-      md5: e465842201c425b0cd0fb3d0d90f7309.dir
-      size: 272
+      md5: 889a3c1fc0e21a406ef6b5e374648c66.dir
+      size: 871
       nfiles: 1
     - path: models/
-      md5: f9bb66d0f0d48aaaa3f569a470122c0e.dir
-      size: 1370
+      md5: 9eaf4987f133696e7c0ea5e05e266ac5.dir
+      size: 1373
       nfiles: 1
     - path: src/evaluate_classifier.py
-      md5: c69a907f6920059bc07bc9b8d061dce7
-      size: 376
+      md5: 863e134370807528e701897941462ac5
+      size: 972
     outs:
+    - path: classification_report.csv
+      md5: 6b888dd1964cb31c4100036a948690e3
+      size: 214
     - path: metrics.json
-      md5: 3329ba1a6b18407f725a1e25a5500560
-      size: 17
+      md5: 762b99cb3ef021771ea6608770076a4c
+      size: 32

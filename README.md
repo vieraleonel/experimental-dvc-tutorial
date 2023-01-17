@@ -3,17 +3,6 @@
 
 Este repositorio demuestra como utilizar DVC para versionar y hacer seguimiento (*tracking*) de datos y modelos para experimentos de machine learning. También veremos como construir pipelines para ejecutar experimentos con un sólo comando. Finalmente veremos como combinar la anterior para realizar y administrar experimentos de ML.
 
-Este repositorio tiene tres *tags* importantes:
-
-- `blank`: DVC no ha sido configurado
-- `dvc-tracked` : DVC configurado para hacer seguimiento de datos 
-- `dvc-experiment`: DVC configurado para hacer seguimiento de datos y administrar experimentos
-
-Si desea seguir este tutorial paso a paso se sugiere crear una rama (*branch*) desde la etiqueta (*tag*) `blank` con:
-
-    git checkout blank
-    git switch -c my-own-dvc-journey
-
 La única referencia para este tutorial es la documentación de DVC: https://dvc.org/. La documentación es excelente, por favor revísenla. 
 
 ## Ambiente de desarrollo para este tutorial

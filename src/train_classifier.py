@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-from joblib import dump
+from mlem.api import save
 
 
 def prepare_dataset(dataset_path, params, train=True):
@@ -36,4 +36,5 @@ if __name__ == "__main__":
     params = yaml.safe_load(open("params.yaml"))["train"]
     X, y, _ = prepare_dataset('features/feature_table.csv', params, train=True)
     model = train_dt(X, y, params)
-    dump(model, output_dir / 'model.joblib')
+    #dump(model, output_dir / 'model.joblib')
+    save(model, "models/dt_model", sample_data=X)

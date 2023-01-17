@@ -1,7 +1,8 @@
 import json
 import yaml
 import pandas as pd
-from joblib import load
+#from joblib import load
+from mlem.api import load
 from sklearn.metrics import f1_score, classification_report
 from train_classifier import prepare_dataset
 
@@ -10,7 +11,7 @@ if __name__ == "__main__":
     params = yaml.safe_load(open("params.yaml"))["train"]
     X, y, labels = prepare_dataset('features/feature_table.csv',
                                    params, train=False)
-    model = load('models/model.joblib')
+    model = load('models/dt_model')
     ypred = model.predict(X)
     metrics = {'f1_score': f1_score(y, ypred)}
     with open('metrics.json', 'w') as f:

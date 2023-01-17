@@ -153,8 +153,3 @@ dmypy.json
 cython_debug/
 
 
-/raw_data
-/data
-/features
-/models
-/classification_report.csv
